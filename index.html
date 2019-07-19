@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+<body>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.0.3/math.js"></script>
+<script>
+  $(document).on('focus', 'input[type=number]', function (e) {
+  $(this).on('mousewheel.disableScroll', function (e) {
+    e.preventDefault()
+  })
+});
+$(document).on('blur', 'input[type=number]', function (e) {
+  $(this).off('mousewheel.disableScroll')
+})
+</script>
+<style>
+input { width:5% }
+.button {
+width:10%;
+height:5%;
+}
+input[type=reset]{ width: 10%; height: 5%;}
+input[type=submit]{ width: 10%; height: 5%}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+</style>
+</head>
+
+
+<h2>Calculator</h2>
+
+<form id="form1">
+
+  Type 1: % any Rainbow
+  <input type="number" name="any1" min="0.000" max="100.000" value="0.000" step="0.001"> &nbsp;
+  % Banner Rainbow
+  <input type="number" name="ban1" min="0.00" max="100.000" value="0.000" step="0.001"> &nbsp;
+  # of chances at this rate
+  <input type="number" name="c1" min="0" max="100" value ="0"> &nbsp;
+  <br>
+  Type 2: % any Rainbow
+  <input type="number" name="any2" min="0" max="100" value="0.000" step="0.001"> &nbsp;
+  % Banner Rainbow
+  <input type="number" name="ban2" min="0.00" max="100.00" value="0.000" step="0.001"> &nbsp;
+  # of chances at this rate
+  <input type="number" name="c2" min="0" max="100" value ="0"> &nbsp;
+  <br>
+  Type 3: % any Rainbow
+  <input type="text" name="any3" min="0" max="100" value="0.000" step="0.001"> &nbsp;
+  % Banner Rainbow
+  <input type="number" name="ban3" min="0.00" max="100.00" value="0.000" step="0.001"> &nbsp;
+  # of chances at this rate
+  <input type="number" name="c3" min="0" max="100" value ="0"> &nbsp;
+  <br>  
+  Type 4: % any Rainbow
+  <input type="text" name="any4" min="0" max="100" value="0.000" step="0.001"> &nbsp;
+  % Banner Rainbow
+  <input type="number" name="ban4" min="0.00" max="100.00" value="0.000" step="0.001"> &nbsp;
+  # of chances at this rate
+  <input type="number" name="c4" min="0" max="100" value ="0"> &nbsp;
+  <br>
+  Number of Laps (Leave at 1 unless repeating these multiple times):
+  <input type="number" name="repeat" min="1" max="100" value="1">
+  <br>
+  Minimal any Rainbow Report %:
+  <input type="number" name="minpercentage" min="0.000" max="100" value="0.001">
+
+</form> 
+  <br><br>
+    <button class="button" onClick="Reset()"> Reset </button>
+	<br><br>
+    <button class="button" onclick="Probability()"> Here We Go </button>
+    <button class="button" onClick="tenone()"> Add 10+1 </button>
+    <button class="button" onClick="Elena()"> Elena Stepup </button>
+    <p id = "pld"><p>
+    <p id="table1"></p>
+    <p id="formtest"></p>
+    <p id="tld"></p>
+    <p id="table2"></p>
+    <p id="formtest2"></p>
+<script>
+function Probability() {
+  document.getElementById("pld").innerHTML = "Per Lap Data";
+  var form = document.forms.form1;
+  var minperc = form.elements.minpercentage.value;
+  var p1 = form.elements.any1.value;
+  var p2 = form.elements.any2.value;
+  var p3 = form.elements.any3.value;
+  var p4 = form.elements.any4.value;
+  var c1 = form.elements.c1.value;
+  var c2 = form.elements.c2.value;
+  var c3 = form.elements.c3.value;
+  var c4 = form.elements.c4.value;
+  var b1 = form.elements.ban1.value;
+  var b2 = form.elements.ban2.value;
+  var b3 = form.elements.ban3.value;
+  var b4 = form.elements.ban4.value;
+  var p1 = p1/100;
+  var p2 = p2/100;
+  var p3 = p3/100;
+  var p4 = p4/100;
+  var b1 = b1/100;
+  var b2 = b2/100;
+  var b3 = b3/100;
+  var b4 = b4/100;
+  var minperc = minperc/100;
+  var c1 = Number(c1);
+  var c2 = Number(c2);
+  var c3 = Number(c3);
+  var c4 = Number(c4);
+  var minone = 0;
+  var mintwo = 0;
+  var minthree = 0;
+  var minfour = 0;
+  var minoneb = 0;
+  var mintwob = 0;
+  var minthreeb = 0;
+  var minfourb=0;
+  var maxcalc = 100
+  var total = 0;
+  var total = c1+c2+c3+c4;
+  var minimalr=0;
+  var minimalb=0;
+/*  if (total > maxcalc) {
+    Browser.msgBox("Spreadsheet only handles 100 summons max at a time.");
+    throw new Error("Spreadsheet only handles 100 summons max at a time.");
+  }*/
+  var array = new Array(maxcalc+1);
+  var banner = new Array(maxcalc+1);
+  array.fill(0);
+  banner.fill(0);
+  var n1=p1;
+  var n2=p2;
+  var n3=p3;
+  var n4=p4;
+  if (p1==1){
+  	minimalr+=c1;
+    minone=c1;
+    }
+  if (p2==1){
+  minimalr+=c2;
+  mintwo=c2;
+  }
+  if (p3==1){
+  minimalr+=c3;
+  minthree=c3;
+  }
+  if (p4==1){
+  minimalr+=c4;
+  minfour=c4;
+  }
+  if (b1==1){
+  	minimalb+=c1;
+    minoneb=c1;
+    }
+  if (b2==1){
+  	minimalb+=c2;
+    mintwob=c2;
+    }
+  if (b3==1){
+  	minimalb+=c3;
+    minthreeb=c3;
+    }
+  if (b4==1){
+  	minimalb+=c4;
+    minfourb=c4;
+    }
+  if (p1==0){n1=1}
+  if (p2==0){n2=1}
+  if (p3==0){n3=1}
+  if (p4==0){n4=1}
+  var m1=b1;
+  var m2=b2;
+  var m3=b3;
+  var m4=b4;
+  if (b1==0){m1=1}
+  if (b2==0){m2=1}
+  if (b3==0){m3=1}
+  if (b4==0){m4=1}
+  var onea=Math.max(minone, c1);
+  for (var one=0; one <= onea ; one++){
+      var oneb=Math.max(mintwo, c2);
+      for (var two=0; two <= oneb ; two++){
+        var onec=Math.max(minthree, c3);
+        for (var three=0; three <= onec ; three++){
+          var oned=Math.max(minfour, c4);
+          for (var four=0; four <= oned ; four++){
+            sum=one+two+three+four;
+            if (one>=minone && two>=mintwo && three>=minthree && four>=minfour) {var a = math.combinations(onea,one)*math.combinations(oneb,two)*math.combinations(onec,three)*math.combinations(oned,four)}
+            if (one<minone || two<mintwo || three<minthree || four<minfour){var a = 0}
+            if (one>=minoneb && two>=mintwob && three>=minthreeb && four>=minfourb){var aa = math.combinations(onea,one)*math.combinations(oneb,two)*math.combinations(onec,three)*math.combinations(oned,four)}
+            if (one<minoneb || two<mintwob || three<minthreeb || four<minfourb){var aa = 0}
+            var b = Math.pow(n1,one)*Math.pow(n2,two)*Math.pow(n3,three)*Math.pow(n4,four);
+            var bb = Math.pow(m1, one)*Math.pow(m2, two)*Math.pow(m3,three)*Math.pow(m4,four);
+            var c = Math.pow((1-p1),(c1-one))*Math.pow((1-p2),(c2-two))*Math.pow((1-p3),(c3-three))*Math.pow((1-p4),(c4-four));
+            var cc = Math.pow((1-b1),(c1-one))*Math.pow((1-b2),(c2-two))*Math.pow((1-b3),(c3-three))*Math.pow((1-b4),(c4-four));
+            var prob = a*b*c;
+            var probban = aa*bb*cc;
+            if (sum<=minimalr){array[sum]=1}
+            if (sum>minimalr && one>=minone && two >=mintwo && three>=minthree && four>=minfour){array[sum]=array[sum]+prob}
+            if (sum<=minimalb){banner[sum]=1}
+            if (sum>minimalb && one>=minoneb && two >=mintwob && three>=minthreeb && four>=minfourb){banner[sum]=banner[sum]+probban}
+          }
+        }
+      }
+    }
+  var rainexp = 0;
+  var banexp = 0;
+  var minrain = new Array(maxcalc+1);
+  var minban = new Array(maxcalc+1);
+  minrain.fill(0);
+  minban.fill(0);
+  for (var t=0; t<=total; t++) {
+  	for (var u=t; u<=total; u++) {
+    	minrain[t] += array[u];
+        minban[t] += banner[u];
+        if (minrain[t]>1){minrain[t]=1}
+        if (minban[t]>1){minban[t]=1}
+        }
+    }
+  var result = "<table border=1>";
+  for (var t=0; t<=total+1; t++) {
+	if (array[t-1]>=minperc){result += "<tr>"}
+	for (var u=0; u<=5; u++) {
+		if (t==0) {
+			if (u==0){result += "<td>" + "# of rainbows" + "</td>"}
+			if (u==1){result += "<td>" + "% this many rainbows" + "</td>"}
+			if (u==2){result += "<td>" + "% this many banner rainbows" + "</td>"}
+			if (u==3){result += "<td>" + "% at least this many rainbows" + "</td>"}
+			if (u==4){result += "<td>" + "% at least this many banner rainbows" + "</td>"}
+			}
+		if (t>0){
+			if (u==0 && array[t-1]>=minperc){result += "<td>" + (t-1) + "</td>"}
+			if (u==1 && array[t-1]>=minperc){result += "<td>" + (array[t-1]*100).toFixed(3) + "</td>"}
+			if (u==2 && array[t-1]>=minperc){result += "<td>" + (banner[t-1]*100).toFixed(3) + "</td>"}
+			if (u==3 && array[t-1]>=minperc){result += "<td>" + (minrain[t-1]*100).toFixed(3) + "</td>"}
+			if (u==4 && array[t-1]>=minperc){result += "<td>" + (minban[t-1]*100).toFixed(3) + "<td>"}		
+			}
+			}
+            if (array[t-1]>=minperc){result += "</tr>"}
+		}
+	result += "</table>";
+    document.getElementById("table1").innerHTML = result;
+    var bbb=0;
+    var ccc=0;
+    rainexp=minimalr;
+    banexp=minimalb;
+    for (var k=0; k<=total; k++) {
+    if (array[k+1]<1 && array[k]==1){bbb=k}
+    if (array[k+1]<1 && array[k]<1){rainexp+=array[k]*(k-bbb)}
+    if (banner[k+1]<1 && banner[k]==1) {ccc=k}
+    if (banner[k+1]<1 && banner[k]<1){banexp+=banner[k]*(k-ccc)}
+    }
+    document.getElementById("formtest").innerHTML = "Expected Rainbows: "+ rainexp.toFixed(3) + "<br>" + "Expected Banner Rainbows: " + banexp.toFixed(3);
+    var r0 = 0;
+    var r1 = 0;
+    var r2 = 0;
+    var r3 = 0;
+    var r4 = 0;
+    var r5 = 0;
+    var b0 = 0;
+    var b1 = 0;
+    var b2 = 0;
+    var b3 = 0;
+    var b4 = 0;
+    var b5 = 0;
+    var int = 0;
+    var fixr = new Array(6);
+    var fixb = new Array(6);
+    fixr.fill(0);
+    fixb.fill(0);
+    for (i=0;i<=5;i++){
+    	fixr[i]=array[minimalr+i];
+        fixb[i]=banner[minimalb+i];
+        if(i==0){
+        	for(j=i+1;j<=total;j++){
+            	fixr[i]-=array[minimalr+j];
+                fixb[i]-=banner[minimalb+j];
+                }
+               }
+         }
+    var reps = form.elements.repeat.value;
+    var reps = Number(reps);
+    if (reps ==1){
+    document.getElementById("tld").innerHTML = "";
+    document.getElementById("table2").innerHTML = "";
+    }
+    if (reps >=2){
+	document.getElementById("tld").innerHTML = "Chance of 0-5 additional rainbows on " + reps + " laps.";
+    r0 = Math.pow(fixr[0],reps);
+    b0 = Math.pow(fixb[0],reps);
+    r1 = math.combinations(reps,1)*fixr[1]*Math.pow(fixr[0],reps-1);
+    b1 = math.combinations(reps,1)*fixb[1]*Math.pow(fixb[0],reps-1);
+    if (reps >= 2) {r2 = math.combinations(reps,2)*Math.pow(fixr[1],2)*Math.pow(fixr[0],reps-2)+math.combinations(reps,1)*fixr[2]*Math.pow(fixr[0],reps-1)}
+	if (reps >= 2) {r3 = math.combinations(reps,1)*fixr[3]*Math.pow(fixr[0],reps-1)+math.combinations(reps,1)*fixr[2]*math.combinations(reps-1,1)*fixr[1]*Math.pow(fixr[0],reps-2)}
+    if (reps >=3) {r3=r3+math.combinations(reps,3)*Math.pow(fixr[1],3)*Math.pow(fixr[0],reps-3)}
+    if (reps >=2) {r4 = math.combinations(reps,2)*Math.pow(fixr[2],2)*Math.pow(fixr[0],reps-2)+math.combinations(reps,1)*fixr[4]*Math.pow(fixr[0],reps-1)}
+    if (reps >=3) {r4 = r4 + math.combinations(reps,1)*fixr[3]*math.combinations(reps-1,1)*fixr[1]*Math.pow(fixr[0],reps-2) + math.combinations(reps,1)*fixr[2]*math.combinations(reps-1,2)*Math.pow(fixr[1],2)*Math.pow(fixr[0],reps-3)}
+    if (reps >=4) {r4 = r4+math.combinations(reps,4)*Math.pow(fixr[1],4)*Math.pow(fixr[0],reps-4)}
+    r5 = 1-r4-r3-r2-r1-r0;
+
+    if (reps >= 2) {b2 = math.combinations(reps,2)*Math.pow(fixb[1],2)*Math.pow(fixb[0],reps-2)+math.combinations(reps,1)*fixb[2]*Math.pow(fixb[0],reps-1)}
+	if (reps >= 2) {b3 = math.combinations(reps,1)*fixb[3]*Math.pow(fixb[0],reps-1)+math.combinations(reps,1)*fixb[2]*math.combinations(reps-1,1)*fixb[1]*Math.pow(fixb[0],reps-2)}
+    if (reps >=3) {b3=b3+math.combinations(reps,3)*Math.pow(fixb[1],3)*Math.pow(fixb[0],reps-3)}
+    if (reps >=2) {b4 = math.combinations(reps,2)*Math.pow(fixb[2],2)*Math.pow(fixb[0],reps-2)+math.combinations(reps,1)*fixb[4]*Math.pow(fixb[0],reps-1)}
+    if (reps >=3) {b4 = b4 + math.combinations(reps,1)*fixb[3]*math.combinations(reps-1,1)*fixb[1]*Math.pow(fixb[0],reps-2) + math.combinations(reps,1)*fixb[2]*math.combinations(reps-1,2)*Math.pow(fixb[1],2)*Math.pow(fixb[0],reps-3)}
+    if (reps >=4) {b4 = b4+math.combinations(reps,4)*Math.pow(fixb[1],4)*Math.pow(fixb[0],reps-4)}
+    b5 = 1-b4-b3-b2-b1-b0;
+    
+  var resultreps = "<table border=1>";
+  for (var t=0; t<=6; t++) {
+	resultreps += "<tr>";
+	for (var u=0; u<=2; u++) {
+		if (t==0) {
+			if (u==0){resultreps += "<td>" + "# of Non-guaranteed Rainbows" + "</td>"}
+			if (u==1){resultreps += "<td>" + "% # Total rainbows" + "</td>"}
+			if (u==2){resultreps += "<td>" + "% # Banner rainbows" + "</td>"}
+			}
+		if (t==1){
+			if (u==0){resultreps += "<td>" + (t-1) + "</td>"}
+			if (u==1){resultreps += "<td>" + (r0*100).toFixed(3) + "</td>"}
+			if (u==2){resultreps += "<td>" + (b0*100).toFixed(3) + "</td>"}	
+			}
+        if (t==2){
+			if (u==0){resultreps += "<td>" + (t-1) + "</td>"}
+			if (u==1){resultreps += "<td>" + (r1*100).toFixed(3) + "</td>"}
+			if (u==2){resultreps += "<td>" + (b1*100).toFixed(3) + "</td>"}	
+			}
+        if (t==3){
+			if (u==0){resultreps += "<td>" + (t-1) + "</td>"}
+			if (u==1){resultreps += "<td>" + (r2*100).toFixed(3) + "</td>"}
+			if (u==2){resultreps += "<td>" + (b2*100).toFixed(3) + "</td>"}		
+			}            
+        if (t==4){
+			if (u==0){resultreps += "<td>" + (t-1) + "</td>"}
+			if (u==1){resultreps += "<td>" + (r3*100).toFixed(3) + "</td>"}
+			if (u==2){resultreps += "<td>" + (b3*100).toFixed(3) + "</td>"}	
+			}
+        if (t==5){
+			if (u==0){resultreps += "<td>" + (t-1) + "</td>"}
+			if (u==1){resultreps += "<td>" + (r4*100).toFixed(3) + "</td>"}
+			if (u==2){resultreps += "<td>" + (b4*100).toFixed(3) + "</td>"}		
+			}
+        if (t==6){
+			if (u==0){resultreps += "<td>" + (t-1) + "+" + "</td>"}
+			if (u==1){resultreps += "<td>" + (r5*100).toFixed(3) + "</td>"}
+			if (u==2){resultreps += "<td>" + (b5*100).toFixed(3) + "</td>"}	
+			}
+			}
+            resultreps += "</tr>";
+		}
+	resultreps += "</table>";
+    document.getElementById("table2").innerHTML = resultreps;
+}
+if (reps>1){document.getElementById("formtest2").innerHTML = "Expected Rainbows: "+ (rainexp*reps).toFixed(3) + "<br>" + "Expected Banner Rainbows: " + (banexp*reps).toFixed(3)}
+}
+</script>
+<script>
+function tenone() {
+  var form = document.forms.form1;
+  var p1 = form.elements.any1.value;
+  var p2 = form.elements.any2.value;
+  var p3 = form.elements.any3.value;
+  var p4 = form.elements.any4.value;
+  var c1 = form.elements.c1.value;
+  var c2 = form.elements.c2.value;
+  var c3 = form.elements.c3.value;
+  var c4 = form.elements.c4.value;
+  var b1 = form.elements.ban1.value;
+  var b2 = form.elements.ban2.value;
+  var b3 = form.elements.ban3.value;
+  var b4 = form.elements.ban4.value;
+  var c1 = Number(c1);
+  var c2 = Number(c2);
+  var c3 = Number(c3);
+  var c4 = Number(c4);
+  var g = 0;
+  var b = 0;
+  if (p1==5 && b1==3.75 && g==0) {
+  	c1=c1+1;
+    g=g+1;
+    }
+  if (p2==5 && b2==3.75 && g==0) {
+  	c2=c2+1;
+    g=g+1;
+    }
+  if (p3==5 && b3==3.75 && g==0) {
+  	c3=c3+1;
+    g=g+1;
+    }
+  if (p4==5 && b4==3.75 && g==0) {
+  	c4=c4+1;
+    g=g+1;
+    }
+  if (p1==3 && b1==1 && b==0) {
+  	c1=c1+10;
+    b=b+1;
+    }
+    if (p2==3 && b2==1 && b==0) {
+  	c2=c2+10;
+    b=b+1;
+    }
+    if (p3==3 && b3==1 && b==0) {
+  	c3=c3+10;
+    b=b+1;
+    }
+    if (p4==3 && b4==1 && b==0) {
+  	c4=c4+10;
+    b=b+1;
+    }
+	if (p1==0 && b1==0 && c1==0 && g==0) {
+    	c1=c1+1;
+        p1=5.00;
+        b1=3.75;
+        g=g+1;
+        }
+	if (p2==0 && b2==0 && c2==0 && g==0) {
+    	c2=c2+1;
+        p2=5.00;
+        b2=3.75;
+        g=g+1;
+        }
+	if (p3==0 && b3==0 && c3==0 && g==0) {
+    	c3=c3+1;
+        p3=5.00;
+        b3=3.75;
+        g=g+1;
+        }
+	if (p4==0 && b4==0 && c4==0 && g==0) {
+    	c4=c4+1;
+        p4=5.00;
+        b4=3.75;
+        g=g+1;
+        }
+    if (p1==0 && b1==0 && c1==0 && b==0) {
+    	c1=c1+10;
+        p1=3.00;
+        b1=1.00;
+        b=b+1;
+        }
+	if (p2==0 && b2==0 && c2==0 && b==0) {
+    	c2=c2+10;
+        p2=3.00;
+        b2=1.00;
+        b=b+1;
+        }
+	if (p3==0 && b3==0 && c3==0 && b==0) {
+    	c3=c3+10;
+        p3=3.00;
+        b3=1.00;
+        b=b+1;
+        }
+	if (p4==0 && b4==0 && c4==0 && b==0) {
+    	c4=c4+10;
+        p4=3.00;
+        b4=1.00;
+        b=b+1;
+        }
+if (b==0 || g==0){alert("10+1 requires 2 rows (one with gold ticket rates and one with standard rates) to be added.  Could not find 2 available spaces for these rates")}
+if (b==1 && g==1){
+	form.elements.any1.value=p1;
+    form.elements.any2.value=p2;
+    form.elements.any3.value=p3;
+    form.elements.any4.value=p4;
+    form.elements.ban1.value=b1;
+    form.elements.ban2.value=b2;
+    form.elements.ban3.value=b3;
+    form.elements.ban4.value=b4;
+    form.elements.c1.value=c1;
+    form.elements.c2.value=c2;
+    form.elements.c3.value=c3;
+    form.elements.c4.value=c4;
+    }
+    }
+</script>
+<script>
+function Reset(){
+ var form = document.forms.form1;
+  form.elements.any1.value=0.000;
+  form.elements.any2.value=0.000;
+  form.elements.any3.value=0.000;
+  form.elements.any4.value=0.000;
+  form.elements.c1.value=0;
+  form.elements.c2.value=0;
+  form.elements.c3.value=0;
+  form.elements.c4.value=0;
+  form.elements.ban1.value=0.000;
+  form.elements.ban2.value=0.000;
+  form.elements.ban3.value=0.000;
+  form.elements.ban4.value=0.000;
+  form.elements.repeat.value=1;
+  form.elements.minpercentage.value=0.001;
+  document.getElementById("pld").innerHTML = "";
+  document.getElementById("table1").innerHTML = "";
+  document.getElementById("formtest").innerHTML = "";
+  document.getElementById("tld").innerHTML = "";
+  document.getElementById("table2").innerHTML = "";
+  document.getElementById("formtest2").innerHTML = "";
+}
+</script>
+<script>
+function Elena(){
+  var form = document.forms.form1;
+  var p1 = form.elements.any1.value;
+  var p2 = form.elements.any2.value;
+  var p3 = form.elements.any3.value;
+  var p4 = form.elements.any4.value;
+  var c1 = form.elements.c1.value;
+  var c2 = form.elements.c2.value;
+  var c3 = form.elements.c3.value;
+  var c4 = form.elements.c4.value;
+  var b1 = form.elements.ban1.value;
+  var b2 = form.elements.ban2.value;
+  var b3 = form.elements.ban3.value;
+  var b4 = form.elements.ban4.value;
+  var c1 = Number(c1);
+  var c2 = Number(c2);
+  var c3 = Number(c3);
+  var c4 = Number(c4);
+  var g = 0;
+  var b = 0;
+  var gr = 0;
+  var gb = 0;
+  if (p1==5 && b1==3.75 && g==0) {
+  	c1=c1+9;
+    g=g+1;
+    }
+  if (p2==5 && b2==3.75 && g==0) {
+  	c2=c2+9;
+    g=g+1;
+    }
+  if (p3==5 && b3==3.75 && g==0) {
+  	c3=c3+9;
+    g=g+1;
+    }
+  if (p4==5 && b4==3.75 && g==0) {
+  	c4=c4+9;
+    g=g+1;
+    }
+  if (p1==3 && b1==1 && b==0) {
+  	c1=c1+44;
+    b=b+1;
+    }
+    if (p2==3 && b2==1 && b==0) {
+  	c2=c2+44;
+    b=b+1;
+    }
+    if (p3==3 && b3==1 && b==0) {
+  	c3=c3+44;
+    b=b+1;
+    }
+    if (p4==3 && b4==1 && b==0) {
+  	c4=c4+44;
+    b=b+1;
+    }
+	if (p1==0 && b1==0 && c1==0 && g==0) {
+    	c1=c1+9;
+        p1=5.00;
+        b1=3.75;
+        g=g+1;
+        }
+	if (p2==0 && b2==0 && c2==0 && g==0) {
+    	c2=c2+9;
+        p2=5.00;
+        b2=3.75;
+        g=g+1;
+        }
+	if (p3==0 && b3==0 && c3==0 && g==0) {
+    	c3=c3+9;
+        p3=5.00;
+        b3=3.75;
+        g=g+1;
+        }
+	if (p4==0 && b4==0 && c4==0 && g==0) {
+    	c4=c4+9;
+        p4=5.00;
+        b4=3.75;
+        g=g+1;
+        }
+    if (p1==0 && b1==0 && c1==0 && b==0) {
+    	c1=c1+44;
+        p1=3.00;
+        b1=1.00;
+        b=b+1;
+        }
+	if (p2==0 && b2==0 && c2==0 && b==0) {
+    	c2=c2+44;
+        p2=3.00;
+        b2=1.00;
+        b=b+1;
+        }
+	if (p3==0 && b3==0 && c3==0 && b==0) {
+    	c3=c3+44;
+        p3=3.00;
+        b3=1.00;
+        b=b+1;
+        }
+	if (p4==0 && b4==0 && c4==0 && b==0) {
+    	c4=c4+44;
+        p4=3.00;
+        b4=1.00;
+        b=b+1;
+        }
+     
+      if (p1==100 && b1==0.833 && gr==0) {
+  	c1=c1+1;
+    gr=gr+1;
+    }
+    if (p2==100 && b2==0.833 && gr==0) {
+  	c2=c2+1;
+    gr=gr+1;
+    }
+    if (p3==100 && b3==0.833 && gr==0) {
+  	c3=c3+1;
+    gr=gr+1;
+    }
+    if (p4==100 && b4==0.833 && gr==0) {
+  	c4=c4+1;
+    gr=gr+1;
+    }
+	if (p1==0 && b1==0 && c1==0 && gr==0) {
+    	c1=c1+1;
+        p1=100;
+        b1=0.833;
+        gr=gr+1;
+        }
+	if (p2==0 && b2==0 && c2==0 && gr==0) {
+    	c2=c2+1;
+        p2=100;
+        b2=0.833;
+        gr=gr+1;
+        }
+	if (p3==0 && b3==0 && c3==0 && gr==0) {
+    	c3=c3+1;
+        p3=100;
+        b3=0.833;
+        gr=gr+1;
+        }
+	if (p4==0 && b4==0 && c4==0 && gr==0) {
+    	c4=c4+1;
+        p4=100;
+        b4=0.833;
+        gr=gr+1;
+        }
+        
+       if (p1==100 && b1==100 && gb==0) {
+  	c1=c1+1;
+    gb=gb+1;
+    }
+    if (p2==100 && b2==100 && gb==0) {
+  	c2=c2+1;
+    gb=gb+1;
+    }
+    if (p3==100 && b3==100 && gb==0) {
+  	c3=c3+1;
+    gb=gb+1;
+    }
+    if (p4==100 && b4==100 && gb==0) {
+  	c4=c4+1;
+    gb=gb+1;
+    }
+	if (p1==0 && b1==0 && c1==0 && gb==0) {
+    	c1=c1+1;
+        p1=100;
+        b1=100;
+        gb=gb+1;
+        }
+	if (p2==0 && b2==0 && c2==0 && gb==0) {
+    	c2=c2+1;
+        p2=100;
+        b2=100;
+        gb=gb+1;
+        }
+	if (p3==0 && b3==0 && c3==0 && gb==0) {
+    	c3=c3+1;
+        p3=100;
+        b3=100;
+        gb=gb+1;
+        }
+	if (p4==0 && b4==0 && c4==0 && gb==0) {
+    	c4=c4+1;
+        p4=100;
+        b4=100;
+        gb=gb+1;
+        }       
+if (b==0 || g==0 || gr==0 || gb==0){alert("Elena stepup requires 4 rows to be added.  Please hit the reset button then click the stepup button again.")}
+if (b==1 && g==1 && gr==1 && gb ==1){
+	form.elements.any1.value=p1;
+    form.elements.any2.value=p2;
+    form.elements.any3.value=p3;
+    form.elements.any4.value=p4;
+    form.elements.ban1.value=b1;
+    form.elements.ban2.value=b2;
+    form.elements.ban3.value=b3;
+    form.elements.ban4.value=b4;
+    form.elements.c1.value=c1;
+    form.elements.c2.value=c2;
+    form.elements.c3.value=c3;
+    form.elements.c4.value=c4;
+    }
+    }
+</script>
+</body>
+</html>
